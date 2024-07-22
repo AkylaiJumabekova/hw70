@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import Toolbar from './components/Toolbar/Toolbar';
 import ContactList from './containers/ContactList/ContactList';
 import AddContact from './containers/AddContact/AddContact';
+import EditContact from './containers/EditContact/EditContact';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<ContactList />} />
           <Route path="/new" element={<AddContact />} />
+          <Route path="/edit/:id" element={<EditContact />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </main>
