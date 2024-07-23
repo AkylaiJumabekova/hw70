@@ -1,25 +1,18 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Toolbar from './components/Toolbar/Toolbar';
-import ContactList from './containers/ContactList/ContactList';
-import AddContact from './containers/AddContact/AddContact';
-import EditContact from './containers/EditContact/EditContact';
+import Layout from './components/Layout/Layout';
+import Home from './containers/Home/Home';
+import NewContact from './containers/NewContact/NewContact';
 
 const App: React.FC = () => {
   return (
-    <>
-      <header>
-        <Toolbar />
-      </header>
-      <main className="container mt-4">
-        <Routes>
-          <Route path="/" element={<ContactList />} />
-          <Route path="/new" element={<AddContact />} />
-          <Route path="/edit/:id" element={<EditContact />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
-        </Routes>
-      </main>
-    </>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/new-contact" element={<NewContact />} />
+        <Route path="*" element={<h1>Not found!</h1>} />
+      </Routes>
+    </Layout>
   );
 };
 
