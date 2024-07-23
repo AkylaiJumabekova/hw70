@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { useAppSelector } from '../../app/hooks';
-import { selectContacts } from '../../store/contactsSlice';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { deleteContact } from '../../store/contactsSlice';
 import { Contact } from '../../types';
 import { useNavigate } from 'react-router-dom';
 import ContactModal from '../../components/ContactModal/ContactModal';
 
 const Home: React.FC = () => {
-    const contacts = useAppSelector(selectContacts);
+    const contacts = useAppSelector(state => state.contacts.contacts);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
@@ -21,6 +22,19 @@ const Home: React.FC = () => {
 
     const handleCloseModal = () => {
         setSelectedContact(null);
+    };
+
+    const handleEdit = () => {
+        if (selectedContact) {
+            navigate(`/edit-contact/${selectedContact.id}`);
+        }
+    };
+
+    const handleDelete = () => {
+        if (selectedContact) {
+            dispatch(deleteContact(selectedContact.id));
+            handleCloseModal();
+        }
     };
 
     return (
@@ -60,6 +74,12 @@ const Home: React.FC = () => {
                     <div className="modal-footer">
                         <button className="btn btn-secondary" onClick={handleCloseModal}>
                             Close
+                        </button>
+                        <button className="btn btn-primary" onClick={handleEdit}>
+                            Edit
+                        </button>
+                        <button className="btn btn-danger" onClick={handleDelete}>
+                            Delete
                         </button>
                     </div>
                 </ContactModal>

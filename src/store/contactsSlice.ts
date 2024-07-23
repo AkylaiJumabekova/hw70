@@ -16,9 +16,23 @@ const contactsSlice = createSlice({
         addContact: (state, action: PayloadAction<Contact>) => {
             state.contacts.push(action.payload);
         },
+        updateContact: (state, action: PayloadAction<Contact>) => {
+            const index = state.contacts.findIndex(contact => contact.id === action.payload.id);
+            if (index !== -1) {
+                state.contacts[index] = action.payload;
+            }
+        },
+        deleteContact: (state, action: PayloadAction<string>) => {
+            const newContacts = [];
+            for (let i = 0; i < state.contacts.length; i++) {
+                if (state.contacts[i].id !== action.payload) {
+                    newContacts.push(state.contacts[i]);
+                }
+            }
+            state.contacts = newContacts;
+        }
     },
 });
 
-export const { addContact } = contactsSlice.actions;
-export const selectContacts = (state: { contacts: ContactsState }) => state.contacts.contacts;
+export const { addContact, updateContact, deleteContact } = contactsSlice.actions;
 export default contactsSlice.reducer;
