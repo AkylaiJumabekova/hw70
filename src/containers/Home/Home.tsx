@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { fetchContacts, deleteContactFromFirebase } from '../../store/contactsThunks';
 import { Contact } from '../../types';
 import { useNavigate } from 'react-router-dom';
+import ContactModal from '../../components/ContactModal/ContactModal';
 
 const Home: React.FC = () => {
   const contacts = useAppSelector(state => state.contacts.contacts);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
   useEffect(() => {
     dispatch(fetchContacts());
@@ -29,6 +31,14 @@ const Home: React.FC = () => {
     }
   };
 
+  const handleContactClick = (contact: Contact) => {
+    setSelectedContact(contact);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedContact(null);
+  };
+
   return (
     <div>
       <h4>Contacts</h4>
@@ -37,20 +47,38 @@ const Home: React.FC = () => {
       </button>
       <div>
         {contacts.map((contact: Contact) => (
-          <div key={contact.id} className="card mb-2">
+          <div
+            key={contact.id}
+            className="card mb-2"
+            onClick={() => handleContactClick(contact)}
+          >
             <div className="card-body">
               <h5 className="card-title">{contact.name}</h5>
               <p className="card-text">{contact.phone}</p>
               <p className="card-text">{contact.email}</p>
               <img src={contact.photo} alt={contact.name} style={{ width: '50px', height: '50px' }} />
-              <div>
-                <button onClick={() => handleEdit(contact)} className="btn btn-secondary mr-2">Edit</button>
-                <button onClick={() => handleDelete(contact.id)} className="btn btn-danger">Delete</button>
-              </div>
             </div>
           </div>
         ))}
       </div>
+      {selectedContact && (
+        <ContactModal
+          show={!!selectedContact}
+          title={selectedContact.name}
+          onClose={handleCloseModal}
+        >
+          <div className="modal-body">
+            <p><strong>Phone:</strong> {selectedContact.phone}</p>
+            <p><strong>Email:</strong> {selectedContact.email}</p>
+            <img src={selectedContact.photo} alt={selectedContact.name} style={{ width: '100px', height: '100px' }} />
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
+            <button className="btn btn-primary" onClick={() => handleEdit(selectedContact)}>Edit</button>
+            <button className="btn btn-danger" onClick={() => handleDelete(selectedContact.id)}>Delete</button>
+          </div>
+        </ContactModal>
+      )}
     </div>
   );
 };
