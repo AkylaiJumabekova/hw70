@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Contact } from '../types';
-import { fetchContacts, addContactToFirebase, updateContactInFirebase } from './contactsThunks';
+import { fetchContacts, addContactToFirebase, updateContactInFirebase, deleteContactFromFirebase } from './contactsThunks';
 
 interface ContactsState {
   contacts: Contact[];
@@ -38,6 +38,12 @@ const contactsSlice = createSlice({
         const index = state.contacts.findIndex(contact => contact.id === action.payload.id);
         if (index !== -1) {
           state.contacts[index] = action.payload;
+        }
+      })
+      .addCase(deleteContactFromFirebase.fulfilled, (state, action: PayloadAction<string>) => {
+        const index = state.contacts.findIndex(contact => contact.id === action.payload);
+        if (index !== -1) {
+          state.contacts.splice(index, 1);
         }
       });
   }
